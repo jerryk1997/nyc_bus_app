@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button, Paper, Grid, Typography, Avatar } from "@mui/material";
 import "./Menu.css";
 import BusDropdown from "./BusDropdown";

@@ -1,13 +1,8 @@
-import { useContext, useEffect, useState, useRef } from "react";
-import axios from "axios";
-import { MapContainer, TileLayer, GeoJSON, useMap } from "react-leaflet";
+import { useContext, useEffect } from "react";
 import { useLeafletContext } from "@react-leaflet/core";
-import L, { geoJSON } from "leaflet";
+import L from "leaflet";
 import { useImmer } from "use-immer";
-import { Backdrop, CircularProgress } from "@mui/material";
 import bbox from "@turf/bbox";
-
-new L.GeoJSON();
 
 import "./Map.css";
 import "leaflet/dist/leaflet.css";

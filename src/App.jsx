@@ -2,7 +2,6 @@ import { ThemeProvider, createTheme } from "@mui/material";
 
 import { useImmerReducer } from "use-immer";
 
-import Map_v2 from "./components/Map_v2";
 import Map from "./components/Map";
 import Menu from "./components/Menu";
 import StateContext from "./StateContext";
@@ -68,7 +67,7 @@ function App() {
         <StateContext.Provider value={state}>
           <DispatchContext.Provider value={dispatch}>
             <Menu />
-            <Map_v2 />
+            <Map />
           </DispatchContext.Provider>
         </StateContext.Provider>
       </ThemeProvider>
