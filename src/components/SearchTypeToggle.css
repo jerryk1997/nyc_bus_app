@@ -1,0 +1,27 @@
+.MuiButtonBase-root.search-toggle-button {
+  height: 40px;
+  /* font-family: "Source Sans Pro", sans-serif; */
+}
+
+.MuiButtonBase-root.search-toggle-button.no-left-shadow {
+  box-shadow: 1.8px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.MuiButtonBase-root.search-toggle-button.no-right-shadow {
+  box-shadow: -1.8px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.MuiButtonBase-root.search-toggle-button[aria-pressed="false"] {
+  background-color: #76a4ce;
+  color: #ffffff;
+}
+
+.MuiButtonBase-root.search-toggle-button[aria-pressed="true"] {
+  background-color: #006dd6;
+  color: #ffffff;
+}
+
+.MuiButtonBase-root.search-toggle-button[aria-pressed="true"]:hover {
+  background-color: #0062be;
+  color: #ffffff;
+}
