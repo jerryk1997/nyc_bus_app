@@ -35,3 +35,19 @@
   font-size: 1.2rem;
   box-shadow: 0 0 0px 5px #fff;
 }
+
+.popup-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.popup-table td {
+  border: 2px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.popup-table thead tr td {
+  font-weight: 600;
+}
