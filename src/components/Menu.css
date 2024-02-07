@@ -26,11 +26,11 @@ body .menu {
 
 .MuiButtonBase-root.view-route-button {
   background-color: #5bb85d;
+  margin-left: 8px;
 }
 
 .MuiButtonBase-root.clear-button {
   width: 105px;
-  margin-left: 8px;
   background-color: #f53649;
 }
 

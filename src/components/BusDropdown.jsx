@@ -21,8 +21,18 @@ function BusDropdown() {
   const appDispatch = useContext(DispatchContext);
 
   const [options, setOptions] = useState([""]);
+  const [recentSelected, setRecentSelected] = useState(null);
   const [selectedOption, setSelectedOption] = useState(null);
   const [label, setLabel] = useState(null);
+  const [isFocused, setIsFocused] = useState(false);
+
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
 
   useEffect(() => {
     async function populateOptions() {
@@ -64,7 +74,26 @@ function BusDropdown() {
         options={options}
         value={selectedOption}
         onChange={e => setSelectedOption(e.target.textContent || null)}
-        renderInput={params => <TextField {...params} label={label} />}
+        renderInput={params =>
+          isFocused ? (
+            // Element with placeholder when dropdown is focused
+            <TextField
+              {...params}
+              label={label}
+              placeholder="Type to search"
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+            />
+          ) : (
+            // Element without placeholder to show label when dropdown is not focused
+            <TextField
+              {...params}
+              label={label}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+            />
+          )
+        }
       />
     </div>
   );

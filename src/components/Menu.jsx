@@ -56,13 +56,6 @@ function Menu() {
         <Grid item xs={12}>
           <div className="menu-buttons">
             <Button
-              onClick={handleViewRoute}
-              className="view-route-button"
-              variant="contained"
-            >
-              View Route
-            </Button>
-            <Button
               onClick={() => {
                 appDispatch({ type: "reset" });
                 appDispatch({ type: "setSearchParam", value: null });
@@ -71,6 +64,13 @@ function Menu() {
               variant="contained"
             >
               Clear
+            </Button>
+            <Button
+              onClick={handleViewRoute}
+              className="view-route-button"
+              variant="contained"
+            >
+              View Route
             </Button>
           </div>
         </Grid>
