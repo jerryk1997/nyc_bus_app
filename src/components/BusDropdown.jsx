@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  InputLabel,
-  FormControl,
-  NativeSelect,
-  Select,
-  MenuItem,
-  Autocomplete,
-  TextField
-} from "@mui/material";
+import { Autocomplete, TextField } from "@mui/material";
 import axios from "axios";
 
 import "./BusDropdown.css";
@@ -21,7 +12,6 @@ function BusDropdown() {
   const appDispatch = useContext(DispatchContext);
 
   const [options, setOptions] = useState([""]);
-  const [recentSelected, setRecentSelected] = useState(null);
   const [selectedOption, setSelectedOption] = useState(null);
   const [label, setLabel] = useState(null);
   const [isFocused, setIsFocused] = useState(false);
@@ -34,31 +24,44 @@ function BusDropdown() {
     setIsFocused(false);
   };
 
-  useEffect(() => {
-    async function populateOptions() {
-      console.log("========= Populating options =========");
-      let response;
-      if (appState.searchType === "publishedLine") {
-        setLabel("Published Line");
-        console.log("Fetching published line options");
-        response = await axios.get("/getPubLineName");
-        console.log("Published line data fetched\n", response.data);
-      } else {
-        setLabel("Vehicle Ref.");
-        console.log("Fetching vehicle reference options");
-        response = await axios.get("/getVehRef");
-        console.log("Vehiche reference data fetched\n", response.data);
-      }
+  function populateOptions() {
+    let routeData = appState.routeData[appState.searchType];
+    let recentSearches = appState.recentSearches[appState.searchType];
 
-      setSelectedOption(null);
-      setOptions(response.data);
+    if (appState.searchType === "publishedLine") {
+      setLabel("Published Line");
+    } else {
+      setLabel("Vehicle Ref.");
     }
 
-    populateOptions();
-  }, [appState.searchType]);
+    const allOptions = routeData
+      .filter(data => !recentSearches.includes(data))
+      .map(data => ({ group: "All", label: data }));
+    console.log(allOptions);
+
+    let recentOptions = [];
+    if (recentSearches.length > 0) {
+      recentOptions = recentSearches.map(data => {
+        return { group: "Recent", label: data };
+      });
+    }
+
+    const options = [...recentOptions, ...allOptions];
+
+    console.log(options);
+    setOptions(options);
+  }
 
   useEffect(() => {
-    appDispatch({ type: "setSearchParam", value: selectedOption });
+    setSelectedOption(null);
+    populateOptions();
+  }, [appState.searchType, appState.routeData]);
+
+  useEffect(() => {
+    appDispatch({
+      type: "setSearchParam",
+      value: selectedOption ? selectedOption.label : null
+    });
   }, [selectedOption]);
 
   useEffect(() => {
@@ -67,13 +70,27 @@ function BusDropdown() {
     }
   }, [appState.searchParam]);
 
+  useEffect(() => {
+    let currentSelected = selectedOption;
+    setSelectedOption(null);
+    populateOptions();
+    setSelectedOption({
+      ...currentSelected,
+      group: "Recent"
+    });
+  }, [appState.recentSearches]);
+
   return (
     <div className="dropdown-container">
       <Autocomplete
         disablePortal
         options={options}
+        groupBy={option => option.group} // Grouping options by group property
+        getOptionLabel={option => option.label} // Retrieving label from each option object
         value={selectedOption}
-        onChange={e => setSelectedOption(e.target.textContent || null)}
+        onChange={(e, newValue) => {
+          setSelectedOption(newValue ? newValue : null);
+        }}
         renderInput={params =>
           isFocused ? (
             // Element with placeholder when dropdown is focused

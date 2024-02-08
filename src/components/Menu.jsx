@@ -18,6 +18,7 @@ function Menu() {
       setShowError(true);
     } else {
       setShowError(false);
+      appDispatch({ type: "addRecentSearch", value: appState.searchType });
       appDispatch({ type: "viewRoute" });
     }
   }
