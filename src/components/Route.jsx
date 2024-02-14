@@ -3,6 +3,7 @@ import { useLeafletContext } from "@react-leaflet/core";
 import L from "leaflet";
 import { useImmer } from "use-immer";
 import bbox from "@turf/bbox";
+import dayjs from "dayjs";
 
 import "./Map.css";
 import "leaflet/dist/leaflet.css";
@@ -27,6 +28,20 @@ function Route() {
       console.log("Creating layer from GeoJson:", appState.geoJson);
       const geoJsonLayer = new L.geoJSON(appState.geoJson).bindPopup(layer => {
         console.log(layer.feature);
+
+        // Process durations
+        const start = dayjs(layer.feature.properties.StartTime);
+        const end = dayjs(layer.feature.properties.EndTime);
+
+        const totalSeconds = Math.floor(end.diff(start) / 1000);
+        const minutes = Math.floor(totalSeconds / 60);
+
+        const formattedDuration = minutes + " Mins";
+
+        const formattedStart = start.format("h:mm A");
+        const formattedEnd = end.format("h:mm A");
+        console.log(formattedStart, formattedEnd, formattedDuration);
+
         const popupContent = document.createElement("div");
         popupContent.innerHTML = `
           <table class="popup-table">
@@ -48,6 +63,18 @@ function Route() {
               <tr>
                 <td>Destination</td>
                 <td>${layer.feature.properties.DestinationName}</td>
+              </tr>
+              <tr>
+                <td>Start Time</td>
+                <td>${formattedStart}</td>
+              </tr>
+              <tr>
+                <td>End Time</td>
+                <td>${formattedEnd}</td>
+              </tr>
+              <tr>
+                <td>Duration</td>
+                <td>${formattedDuration}</td>
               </tr>
             </tbody>
           </table>
