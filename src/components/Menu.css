@@ -29,9 +29,17 @@ body .menu {
   margin-left: 8px;
 }
 
+.MuiButtonBase-root.view-route-button:hover {
+  background-color: #57b158;
+}
+
 .MuiButtonBase-root.clear-button {
   width: 105px;
   background-color: #f53649;
+}
+
+.MuiButtonBase-root.clear-button:hover {
+  background-color: #ee3447;
 }
 
 .MuiTypography-root.option-error {

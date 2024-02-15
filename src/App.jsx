@@ -17,6 +17,7 @@ import axios from "axios";
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 
+  // ========= Styling =========
   const theme = createTheme({
     typography: {
       fontFamily: ["Source Sans Pro", "sans-serif"].join(",")
@@ -39,6 +40,7 @@ function App() {
     }
   });
 
+  // ========= Initial State =========
   const initialState = {
     newYorkCoordinates: [40.7128, -74.006],
     searchType: "publishedLine",
@@ -56,6 +58,7 @@ function App() {
     }
   };
 
+  // ========= Reducer utility functions =========
   function addRecentSearch(recentSearches, currentSearch) {
     let i = recentSearches.indexOf(currentSearch);
     if (i === -1 && recentSearches.length < 5) {
@@ -64,17 +67,16 @@ function App() {
       recentSearches.pop();
       recentSearches.unshift(currentSearch);
     } else {
-      console.log(recentSearches);
       while (i >= 1) {
         const temp = recentSearches[i - 1];
         recentSearches[i - 1] = recentSearches[i];
         recentSearches[i] = temp;
         i -= 1;
       }
-      console.log(recentSearches);
     }
   }
 
+  // ========= Reducer =========
   function appReducer(draft, action) {
     switch (action.type) {
       case "setBusData":
@@ -88,6 +90,9 @@ function App() {
         break;
       case "setGeoJson":
         draft.geoJson = action.value;
+        break;
+      case "setRecentSearches":
+        draft.recentSearches = action.value;
         break;
       case "viewRoute":
         draft.viewRouteToggle = !draft.viewRouteToggle;
@@ -107,12 +112,23 @@ function App() {
         let recentSearches = [...draft.recentSearches[key]];
         addRecentSearch(recentSearches, draft.searchParam);
         draft.recentSearches[key] = recentSearches;
+
+        const jsonString = JSON.stringify(draft.recentSearches);
+        localStorage.setItem("recentSearches", jsonString);
+        break;
+      case "clearRecentSearch":
+        draft.recentSearches.publishedLine = [];
+        draft.recentSearches.vehicleRef = [];
+
+        localStorage.removeItem("recentSearches");
         break;
     }
   }
 
   const [state, dispatch] = useImmerReducer(appReducer, initialState);
 
+  // ========= Use effects =========
+  // Initialising
   useEffect(() => {
     async function fetchOptions() {
       // Wake up server
@@ -120,24 +136,41 @@ function App() {
 
       console.log("====== Server Ready, Fetching data ======");
 
-      // Fetching published line data
-      let response = await axios.get("/getPubLineName");
+      // Fetching data
+      let publishedLineResponse = await axios.get("/getPubLineName");
+      let vehRefResponse = await axios.get("/getVehRef");
+      while (
+        publishedLineResponse.data.length === 0 ||
+        vehRefResponse.data.length === 0
+      ) {
+        console.log("Trying to fetch again");
+        publishedLineResponse = await axios.get("/getPubLineName");
+        vehRefResponse = await axios.get("/getVehRef");
+      }
+
       dispatch({
         type: "setBusData",
         key: "publishedLine",
-        value: response.data
+        value: publishedLineResponse.data
       });
       console.log("Fetched published line data");
 
-      // Fetching vehicle ref data
-      response = await axios.get("/getVehRef");
-      dispatch({ type: "setBusData", key: "vehicleRef", value: response.data });
+      dispatch({
+        type: "setBusData",
+        key: "vehicleRef",
+        value: vehRefResponse.data
+      });
       console.log("Fetched vehicle ref data");
     }
 
     fetchOptions();
+    if (localStorage.getItem("recentSearches")) {
+      const recentSearches = JSON.parse(localStorage.getItem("recentSearches"));
+      dispatch({ type: "setRecentSearches", value: recentSearches });
+    }
   }, []);
 
+  // Loading Route
   useEffect(() => {
     console.log(state.routeData);
     if (
