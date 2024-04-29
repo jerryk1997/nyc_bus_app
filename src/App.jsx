@@ -131,6 +131,7 @@ function App() {
   // Initialising
   useEffect(() => {
     async function fetchOptions() {
+      console.log("fetching");
       // Wake up server
       await axios.get("/ready");
 

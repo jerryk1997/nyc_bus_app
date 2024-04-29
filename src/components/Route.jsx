@@ -53,6 +53,10 @@ function Route() {
             </thead>
             <tbody>
               <tr>
+                <td>Published Line</td>
+                <td>${layer.feature.properties.PublishedLineName}</td>
+              </tr>
+              <tr>
                 <td>Vehicle Ref.</td>
                 <td>${layer.feature.properties.VehicleRef}</td>
               </tr>
